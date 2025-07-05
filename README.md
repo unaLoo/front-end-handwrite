@@ -1,14 +1,7 @@
-# 前端面试手写题
-
-整理前端面试常见的手写题
-
-你也可以提交 PR，提供你面试遇到的题目。
-
-代码汇总请参照 [SUMMARY.md](./SUMMARY.md) 。
-
-**高频**：★★★ </br>
-**中频**：★★ </br>
-**低频**：★ </br>
+# Frontend-Interview-Handwrite
+Fork from [Mayandev/fe-interview-handwrite](https://github.com/Mayandev/fe-interview-handwrite)
+   
+整理前端面试常见的手写题, 加入了个人学习的详细注释
 
 ## JavaScript 原理
 
@@ -49,8 +42,6 @@
 
 ## 算法
 
-算法需要掌握基本的数据结构，例如栈、队列、链表、树、排序算法等等，建议去 [LeetCode](https://leetcode-cn.com/) 上刷题。不过不要为了刷题而刷题，最重要的是归纳与总结，**刷十道不如一道刷十遍。**
-
 - [归并排序](./src/mergeSort.js) ★★
 - [插入排序](./src/insertionSort.js) ★
 - [快速排序](./src/quickSort.js) ★★★
@@ -83,8 +74,8 @@
 - [ ] LeetCode 328 Odd Even Linked List
 - [ ] LeetCode 415 Add Strings(等价于:大数加法)
 - [ ] LeetCode 470 rand70rand100
-- [ ] LeetCode 496 Next Greater Element I(时间复杂度O(n)(单调栈，使用 Map 映射 stack 的指定位置)
-- [ ] LeetCode 716 Max Stack(两个栈实现最大栈,要求pop,push, get max都为0(1)
+- [ ] LeetCode 496 Next Greater Element I 时间复杂度O(n)(单调栈，使用 Map 映射 stack 的指定位置)
+- [ ] LeetCode 716 Max Stack 两个栈实现最大栈,要求pop,push, get max都为0(1)
 - [ ] LeetCode 860 Lemonade Change
 
 
