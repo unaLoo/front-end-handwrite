@@ -1,19 +1,25 @@
-//正则表达式
-function myTrim1(str){
-    return str.replace(/^\s+|\s+$/g,'')
+/**
+ * 实现字符串的trim函数
+ */
+// 正则表达式实现
+function theTrim1(str) {
+    // const regex = new RegExp(/^\s+|\s+&/, 'g')
+    // const res = str.replace(regex, '')
+    // return res
+    return str.replace(/^\s+|\s+$/,'')
+}
+// 对撞指针实现
+function theTrim2(str) {
+    let l = 0
+    let r = str.length - 1
+
+    while (l < str.length && str[l] == ' ') l++
+    while (r > str.length && str[r] == ' ') r--
+
+    if (l < r) return str.slice(l, r + 1)
+    else return ''
 }
 
-//不使用正则表达式
-function myTrim2(str){
-    let head = 0
-        foot = str.length
-    for(let i =0;i<str.length;i++){
-        if(str[i]===' ')head++
-        else break
-    }
-    for(let j =str.length-1;j>0;j--){
-        if(str[j]===' ')foot--
-        else break
-    }
-    return str.substr(head,foot-head)
-}
+const str = '  haea asd asdad   '
+console.log(theTrim1(str))
+console.log(theTrim2(str))

@@ -1,6 +1,6 @@
 # 前端面试手写题
 
-整理前端面试常见的手写题，面试出现概率极高，建议每个都过自己过一遍。
+整理前端面试常见的手写题
 
 你也可以提交 PR，提供你面试遇到的题目。
 
@@ -13,7 +13,7 @@
 ## JavaScript 原理
 
 - [实现 bind()](./src/bind.js) ★★
-- [实现 apply()](./src/apply.js) ★★
+- [实现 apply()](./src/pply.js) ★★
 - [实现 call()](./src/call.js) ★★
 - [实现 instanceof](./src/instanceof.js) ★
 - [实现 new](./src/new.js) ★
@@ -21,7 +21,7 @@
 - [实现 Promise](./src/promise.js) ★★★
 - [实现 Promise.all()](./src/promiseAll.js) ★★★
 - [实现 Promise.race()](./src/promiseRace.js) ★
-- [实现 Proxy](./src/proxy.js) ★★
+- [实现 数据劫持](./src/reactive.js) ★★
 - [实现 EventEmitter 订阅监听模式](./src/subscribe.js) ★★
 - [setTimout 实现 setInterval](./src/interval.js) ★
 - [深拷贝](./src/deepclone.js)  ★★★
@@ -47,10 +47,6 @@
 - [去除字符串首尾空格](./src/trim.js) ★
 - [下划线驼峰互转](./src/camel.js) ★
 
-## 数学
-
-- [计算圆周率](./src/pi.js) ★
-
 ## 算法
 
 算法需要掌握基本的数据结构，例如栈、队列、链表、树、排序算法等等，建议去 [LeetCode](https://leetcode-cn.com/) 上刷题。不过不要为了刷题而刷题，最重要的是归纳与总结，**刷十道不如一道刷十遍。**
@@ -58,9 +54,7 @@
 - [归并排序](./src/mergeSort.js) ★★
 - [插入排序](./src/insertionSort.js) ★
 - [快速排序](./src/quickSort.js) ★★★
-- [选择排序](./src/selectionSort.js) ★
-- [希尔排序](./src/shellSort.js) ★
-- [堆排序](./src/heapSort.js) ★
+- [堆排序](./src/heapSort.js) ★★
 - [二分查找](./src/binarySearch.js) ★
 - [最长递增子序列](./src/lis.js) ★★★
 - [最长公共子串](./src/longestCommonPrefix.js) ★★

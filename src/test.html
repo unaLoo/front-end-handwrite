@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function reactive_vue2(obj) {
+
+            // 因为要递归，加上这个判断
+            if (typeof obj !== 'object' || obj === null) return obj
+
+            const observer = {}
+            for (let key of Object.keys(obj)) {
+
+                let val = reactive_vue2(obj[key])
+                Object.defineProperty(observer, key, {
+                    enumerable: true,
+                    get() {
+                        console.log('get ', key)
+                        return val
+                    },
+                    set(newVal) {
+                        console.log('set ', key, 'to', newVal)
+                        val = reactive_vue2(newVal)
+                    }
+                })
+            }
+            return observer
+        }
+
+        function reactive_vue3(obj) {
+
+            if (typeof obj !== 'object' || obj === null) return obj
+
+            let val = null
+            return new Proxy(obj, {
+                'get': function (target, prop, receiver) {
+                    console.log('get ', prop)
+                    val = reactive_vue3(Reflect.get(target, prop))
+                    return val
+                },
+                'set': function (target, prop, newVal, receiver) {
+                    console.log('set ', prop, ' to ', newVal)
+                    val = reactive_vue3(newVal)
+                    Reflect.set(target, prop, val)
+                }
+            })
+        }
+
+
+
+        // test
+        const object = {
+            'name': 'Jack',
+            'age': 15,
+            'father': {
+                'name': 'Armstrong',
+                'age': 42,
+            },
+            'mother': {
+                'name': 'Jelly',
+                'age': 40,
+            }
+        }
+
+        const a = reactive_vue2(object)
+        a.father.name = 'ArmNotStrong'
+        console.log(a)
+        console.log(a.father)
+        console.log(a.father.name)
+
+        console.log('===============================')
+
+        const b = reactive_vue3(object)
+        b.mother.name = 'sakura'
+        b.name = 'Yee'
+        console.log(b)
+        console.log(b.mother)
+        console.log(b.mother.name)
+    </script>
+</body>
+
+</html>

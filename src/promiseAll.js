@@ -1,59 +1,47 @@
-function isPromise(obj) {
-  return (
-    !!obj && (typeof obj === 'function' || typeof obj === 'object') && typeof obj.then == 'function'
-  );
-}
+/**
+ * 在不适用await/async的情况下实现Promise.all()
+ * 思路：采用计数（finished）实现 
+ */
 
-function isPromise(object) {
-  return (
-    !!object && (typeof obj === 'function' || typeof obj === 'object') && object instanceof Promise
-  );
-}
-function PromiseAll(arr) {
-  return new Promise((resolve, reject) => {
-    const len = arr.length,
-      result = [];
-    let succeed = 0;
-    for (let i = 0; i < len; ++i) {
-      const cur = arr[i];
-      if (isPromise(cur)) {
-        arr[i].then((res) => {
-          process(i, res);
-        }, reject);
-      } else {
-        process(i, cur);
-      }
-    }
-    function process(index, value) {
-      result[index] = value;
-      if (++succeed === len) {
-        resolve(result);
-      }
-    }
-  });
-}
+function promiseAll(arr) {
 
-function myPromiseAll(arr) {
-  let res = [];
-  let containPromise = false;
-  return new Promise((resolve, reject) => {
-    for (let i = 0; i < arr.length; i++) {
-      if (isPromise(arr[i])) {
-        containPromise = true;
-        arr[i]
-          .then((data) => {
-            res[i] = data;
-            if (res.length === arr.length) {
-              resolve(res);
+    return new Promise((resolve, reject) => {
+        try {
+            const result = new Array(arr.length)
+            let finished = 0
+
+            const process = (id, res) => {
+                result[id] = res
+                if (++finished === result.length) {
+                    console.log(1)
+                    resolve(result)
+                }
             }
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      } else {
-        res[i] = arr[i];
-      }
-    }
-    if (!containPromise) resolve(res);
-  });
+
+            for (let index = 0; index < arr.length; index++) {
+                let item = arr[index]
+                if (item instanceof Promise) {
+                    item.then((res) => {
+                        process(index, res)
+                    })
+                } else {
+                    process(index, item)
+                }
+            }
+        }
+        catch (e) {
+            reject(e)
+        }
+    })
 }
+
+const a = Promise.resolve('hello')
+const b = new Promise((res, rej) => {
+    setTimeout(() => {
+        res('wonderful')
+    }, 3000);
+})
+const c = 'world'
+promiseAll([a, b, c]).then(res => {
+    console.log(res)
+})
