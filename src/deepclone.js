@@ -25,28 +25,42 @@ console.log(Reflect.ownKeys(obj)) // [ 'a', 'b', Symbol() ]
 /**
  * 实现对象的深拷贝函数
  */
-function deepClone(obj) {
+function deepClone(obj, map = new WeakMap()) {
 
     if (typeof obj != 'object' || obj == null) return obj
+
+    if (map.has(obj)) {
+        return map.get(obj) // 避免循环引用
+    }
 
     let copy
 
     if (Array.isArray(obj)) {
         copy = []
+        map.set(obj, copy) // 记录
         for (let item of obj) {
             copy.push(deepClone(item))
         }
     }
     else if (obj instanceof Set) {
-        copy = new Set([...obj])
+        copy = new Set()
+        map.set(obj, copy) // 记录
+        for (let item of obj) {
+            copy.add(deepClone(item, map))
+        }
     }
     else if (obj instanceof Map) {
-        copy = new Map([...obj])
+        copy = new Map()
+        map.set(obj, copy) // 记录
+        for (let [key, val] of obj.entries()) {
+            copy.set(deepClone(key, map), deepClone(val, map));
+        }
     }
     else { // Object
         copy = {}
+        map.set(obj, copy) // 记录
         Reflect.ownKeys(obj).forEach(key => {
-            copy[key] = deepClone(obj[key])
+            copy[key] = deepClone(obj[key], map)
         })
     }
 
