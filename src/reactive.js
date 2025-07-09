@@ -9,16 +9,15 @@ function reactive_vue2(obj) {
     const observer = {}
     for (let key of Object.keys(obj)) {
 
-        let val = reactive_vue2(obj[key])
+        let propObserver = reactive_vue2(obj[key])
         Object.defineProperty(observer, key, {
-            enumerable: true,
             get() {
                 console.log('get ', key)
-                return val
+                return propObserver
             },
             set(newVal) {
                 console.log('set ', key, 'to', newVal)
-                val = reactive_vue2(newVal)
+                propObserver = reactive_vue2(newVal)
             }
         })
     }
