@@ -1,11 +1,19 @@
-// Loop`s Tips:
-// 依次执行，并且结果作为下一次的参数，想起来用reduce函数
-// reduce(callbackFn)
-// reduce(callbackFn, initialValue)
-// 它按升序对数组中的所有元素运行一个“reducer”回调函数，并将它们累积到一个单一的值中。
-// reduce 函数的返回值就是最终累计的结果
-// 每次调用时，callbackFn 的返回值都作为 accumulator 参数传递到下一次调用中。
+/* 背景：函数组合是函数式编程中的一个重要概念,主要有compose和pipe两类
+    func1(
+        func2(
+            func3(
+                func4(value)
+            )
+        )
+    );
+    ///// compose //////
+    compose(func1,func2,func3,func4)(value)
+    可以看到，compose的执行顺序应该是自右向左
 
+    ///// pipe //////
+    pipe(func4, func3, func2, func1)(value);
+    pipe的执行顺序是自左向右
+*/
 
 /**
  * 接收若干个函数作为参数，每个函数执行后的输出作为下一个函数的输入。
@@ -13,10 +21,29 @@
  */
 function compose(...fns) {
     return function (arg) {
-        return fns.reverse().reduce((acc, cur) => {
+        // reduceRight的顺序是自右向左， reduce是自左向右
+        return fns.reduceRight((acc, cur) => {
             return cur(acc)
         }, arg)
     }
+}
+
+function pipe(...fns) {
+    return function (arg) {
+        return fns.reduce((acc, cur) => {
+            return cur(acc)
+        }, arg)
+    }
+}
+
+
+// 补充，如果不允许用reduce? 那自己写一个呗
+function theReduce(arr, callback, initVal) {
+    let acc = initVal || null
+    for (let item of arr) {
+        acc = callback(acc, item)
+    }
+    return acc
 }
 
 
@@ -25,3 +52,5 @@ function compose(...fns) {
 // const minus = x => x - 1;
 
 // console.log(compose(minus, multiply, add)(1)) // 3
+
+
