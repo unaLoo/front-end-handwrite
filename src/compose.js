@@ -46,11 +46,87 @@ function theReduce(arr, callback, initVal) {
     return acc
 }
 
-
+// testing
 // const add = x => x + 1;
 // const multiply = x => x * 2;
 // const minus = x => x - 1;
 
 // console.log(compose(minus, multiply, add)(1)) // 3
+
+
+// 再难一些，如果我传入的fn都是异步的呢？
+
+function asyncPipe1(promiseArr) {
+    return function (arg) {
+        let result = arg
+        return new Promise(async (resolve, reject) => {
+            try {
+                for (let item of promiseArr) {
+                    result = await item(result)
+                }
+                resolve(result)
+            }
+            catch (e) {
+                reject(e)
+            }
+        })
+    }
+}
+
+function asyncPipe2(promiseArr) {
+    const len = promiseArr.length
+    return function (arg) {
+        return new Promise((resolve, reject) => {
+
+            const exec = (index, arg) => {
+                if (index == len) {
+                    resolve(arg)
+                    return
+                }
+                promiseArr[index](arg).then((resArg) => {
+                    exec(index + 1, resArg)
+                })
+            }
+
+            try {
+                exec(0, arg)
+            }
+            catch (e) {
+                reject(e)
+            }
+        })
+    }
+}
+
+// testing
+const fn1 = (v) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(v * 2)
+        }, 500);
+    })
+}
+
+const fn2 = (v) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(v * 3)
+        }, 1000);
+    })
+}
+
+const fn3 = (v) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(v * 4)
+        }, 1);
+    })
+}
+
+const fn123 = pipe2([fn1, fn2, fn3])
+
+fn123(1).then(res => {
+    console.log(res)
+})
 
 
