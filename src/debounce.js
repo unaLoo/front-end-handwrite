@@ -5,19 +5,27 @@
  */
 function debouce(fn, delay) {
     let timer = null
-    return (...args) => {
-        if (timer) clearTimeout(timer)
-
+    return function (...args) {
+        if (timer) { clearTimeout(timer) }
         timer = setTimeout(() => {
-            fn(...args)
+            fn.call(this, args)
         }, delay);
+
     }
 }
 
-function add(a, b) {
-    console.log('call me ', Date.now() * 1000)
-    return a + b
+function say(id) {
+    console.log('call me ', id, ' ', new Date().getSeconds())
 }
-const debouncedAdd = debouce(add, 1000)
-console.log('start ', Date.now() * 1000)
-debouncedAdd(1, 2)
+const debounced = debouce(say, 1000)
+console.log('start ', new Date().getSeconds())
+debounced(1)
+debounced(2)
+debounced(3)
+debounced(4)
+debounced(5)
+debounced(6)
+debounced(7)
+debounced(8)
+debounced(9)
+// 只触发最后一次

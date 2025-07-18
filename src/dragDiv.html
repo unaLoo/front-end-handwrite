@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: hsl(20, 100%, 91%);
+        }
+
+        div#draggable {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 200px;
+            height: 200px;
+            background-color: hsl(20, 100%, 75%);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="draggable"></div>
+    <script>
+        const dom = document.querySelector('#draggable')
+        let dragged = false
+        let dragStart = [0, 0], dragEnd = [0, 0]
+
+        // ！！！ 
+        // 记得 dom.offsetLeft 获取元素离左边的px
+        let offSetXY = [dom.offsetLeft, dom.offsetTop]
+
+        function pxstr2num(xxpx) {
+            return Number(xxpx.replace('px', ''))
+        }
+
+        dom.addEventListener('mousedown', (e) => {
+            dragged = true
+            dragStart = [e.clientX, e.clientY]
+            // ！！！ 
+            // 记得 dom.offsetLeft 获取元素离左边的px
+            offSetXY = [dom.offsetLeft, dom.offsetTop]
+        })
+        dom.addEventListener('mousemove', (e) => {
+            if (!dragged) return
+            dragEnd = [e.clientX, e.clientY]
+            const diffx = dragEnd[0] - dragStart[0]
+            const diffy = dragEnd[1] - dragStart[1]
+            // ！！！ 
+            // 在offsetxy的基础上加
+            dom.style.left = `${offSetXY[0] + diffx}px`
+            dom.style.top = `${offSetXY[1] + diffy}px`
+        })
+        dom.addEventListener('mouseup', (e) => {
+            if (!dragged) return
+            dragged = false
+            dragEnd = [e.clientX, e.clientY]
+
+            const diffx = dragEnd[0] - dragStart[0]
+            const diffy = dragEnd[1] - dragStart[1]
+            console.log(diffx, diffy)
+            // ！！！ 
+            // 在offsetxy的基础上加
+            dom.style.left = `${offSetXY[0] + diffx}px`
+            dom.style.top = `${offSetXY[1] + diffy}px`
+        })
+
+    </script>
+</body>
+
+</html>

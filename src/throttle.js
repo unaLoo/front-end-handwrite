@@ -1,6 +1,20 @@
 /**
  * 实现节流
  */
+function throttle2(fn, interval) {
+    let timer = null
+
+    return function (...args) {
+        if (timer) return
+
+        timer = setTimeout(() => {
+            fn.call(...args)
+            timer = null
+        }, interval);
+    }
+}
+
+
 function throttle(fn, wait) {
     // 时间戳实现节流
     // 核心：获取当前时间戳，只有和闭包的时间戳diff>=wait时，才执行函数并更新闭包时间戳
@@ -15,43 +29,18 @@ function throttle(fn, wait) {
     }
 }
 
-function throttle2(fn, wait) {
-    // 定时器实现节流
-    // 核心：从不取消定时器，只在计时完毕标记timer=null，下次重新计时
-    let timer = null
-    return (...args) => {
-        if (timer) return
-
-        timer = setTimeout(() => {
-            fn.call(this, ...args)
-            timer = null
-        }, wait);
-    }
-}
-
-function debouce(fn, delay) {
-    // 定时器实现的防抖
-    // 核心：取消定时器，重新计时
-    let timer = null
-    return (...args) => {
-        if (timer) clearInterval(timer)
-        timer = setTimeout(() => {
-            fn.call(this, ...args)
-        }, delay);
-    }
-}
 
 
 function sayHi() {
-    console.log(' hello ' + Date.now())
+    console.log(' hello ' + new Date().getSeconds())
 }
-const throttledHi = throttle2(sayHi, 1000)
-const debouceHi = debouce(sayHi, 1000)
+const throttledHi = throttle(sayHi, 1000)
 
+// 每隔 10 ms 调用一次， 持续 5s 结束
+// 因为有节流处理，所以应该只调用5次
 let timer = setInterval(() => {
     throttledHi()
-    // debouceHi()
-}, 100);
+}, 10);
 
 setTimeout(() => {
     clearInterval(timer)

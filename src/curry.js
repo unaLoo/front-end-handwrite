@@ -2,13 +2,28 @@
 // function fn(a, b, c){} 
 // fn.length ==> 3 也就是参数的个数
 
+// 在function内部有个内建变量 arguments 
+// arguments 是一个对应于传递给函数的参数的类数组对象。它不是数组，但是可迭代对象
+/**
+    function func1(a, b, c) {
+        console.log(arguments[0]);
+        // Expected output: 1
+
+        console.log(arguments[1]);
+        // Expected output: 2
+
+        console.log(...arguments);
+        // Expected output: 3
+    }
+
+    func1(1, 2, 3);
+*/
 
 /**
  * 柯里化（Currying）是函数式编程中的一个重要概念。
  * 它是一种将接受多个参数的函数转换为一系列只接受一个参数的函数的技术。
  * 每个函数都返回一个新的函数，直到所有参数都被接收，最终返回最终结果。 
  */
-
 function theCurry(fn) {
     const argsLength = fn.length
     return function curried() {
@@ -53,3 +68,32 @@ function sum2(...args1) {
     }
 }
 console.log(sum2(1, 2, 2, 5)(7)()) // 17
+
+
+console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+/**
+ *  实现一个柯里化函数add，使得 
+ *  add(1,2,3).valueOf() // 6
+ *  add(1,2)(3).valueOf() // 6
+ */
+
+function add(...args) {
+
+    let params = args
+
+    function fn(...arguments) {
+        params = args.concat(arguments)
+        // return fn.bind(this, ...params)
+        return add(...params) // !! 注意这里，返回外层这个add函数，这样才袋有valueOf方法
+    }
+    fn.valueOf = function () {
+        return params.reduce((acc, cur) => {
+            return acc + cur
+        }, 0)
+    }
+
+    return fn
+}
+
+
+console.log(add(1)(2, 3)(4).valueOf())
