@@ -5,42 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        #box {
+            width: 60px;
+            height: 60px;
+            background-color: rgb(245, 188, 200);
+            position: absolute;
+            border-radius: 10px;
+        }
+    </style>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.7/css/bootstrap-utilities.rtl.min.css"
+        rel="stylesheet">
+    <script>
+
+        window.onload = _ => {
+            console.log('window. onload')
+        }
+
+        window.addEventListener('DOMContentLoaded', _ => {
+            console.log('DOMContentLoaded')
+        })
+
+
+    </script>
 </head>
 
 <body>
-    <script>
 
-        async function downloadImg(srcUrl, imgName) {
-
-            // 如果srcUrl对应的服务已经设置好了响应头的话
-            // Content-Disposition: attachment; filename="your_file_name.ext"
-            // 可以直接触发浏览器下载，那直接创建a标签
-            // const a = document.createElement('a')
-            // a.href = srcUrl
-            // a.download = imgName
-            // a.click()
-            // a.remove()
+    <div id="box"></div>
 
 
-            // 如果后端没有设置，那需要在前端创建url
-            // fetch(srcUrl).then((response) => {
-            //     return response.blob()
-            // }).then((blob) => {
-            //     const url = URL.createObjectURL(blob)
-            //     const a = document.createElement('a')
-            //     a.href = url
-            //     a.download = imgName
-            //     a.click()
-            //     a.remove()
-            //     URL.revokeObjectURL(url)
-            // })
-
-        }
-        const url = 'https://img-s.msn.cn/tenant/amp/entityid/AA1IKKwt.img?w=534&h=343&m=6&x=319&y=137&s=300&d=141'
-        const imgName = 'test.jpg'
-        downloadImg(url, imgName)
-
-    </script>
 </body>
 
 </html>

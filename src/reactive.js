@@ -1,49 +1,53 @@
 /**
  * 简单模仿Vue2和Vue3的对象数据劫持
  */
-function reactive_vue2(obj) {
 
-    // 因为要递归，加上这个判断
-    if (typeof obj !== 'object' || obj === null) return obj
 
-    const observer = {}
-    for (let key of Object.keys(obj)) {
-
-        let propObserver = reactive_vue2(obj[key])
-        Object.defineProperty(observer, key, {
-            get() {
-                console.log('get ', key)
-                return propObserver
-            },
-            set(newVal) {
-                console.log('set ', key, 'to', newVal)
-                propObserver = reactive_vue2(newVal)
-            }
-        })
-    }
-    return observer
+function isObject(o) {
+    if (typeof o === 'object' && o !== null) return true
+    return false
 }
 
-function reactive_vue3(obj) {
+// vue2
+function observe(obj) {
+    if (!isObject(obj)) return;
 
-    if (typeof obj !== 'object' || obj === null) return obj
+    Object.keys(obj).forEach(key => {
 
-    let val = null
+        let val = obj[key]
+        observe(val)
+        Object.defineProperty(obj, key, {
+            get() {
+                console.log('tracking ', key);
+                return val;
+            },
+            set(newVal) {
+                if (newVal === val) return;
+                val = newVal;
+                observe(newVal);
+                console.log('trigger ', key, newVal);
+            }
+        });
+    });
+
+    return obj
+}
+
+// vue3
+function createReactiveObject(obj) {
     return new Proxy(obj, {
-        'get': function (target, prop, receiver) {
-            console.log('get ', prop)
-            val = reactive_vue3(Reflect.get(target, prop))
-            return val
+        get(target, key, receiver) {
+            const res = Reflect.get(target, key, receiver)
+            console.log('tracking ', key)
+            return isObject(res) ? createReactiveObject(res) : res
         },
-        'set': function (target, prop, newVal, receiver) {
-            console.log('set ', prop, ' to ', newVal)
-            val = reactive_vue3(newVal)
-            Reflect.set(target, prop, val)
+        set(target, key, val, receiver) {
+            const res = Reflect.set(target, key, val, receiver)
+            console.log('trigger ', key, val)
+            return res
         }
     })
 }
-
-
 
 // test
 const object = {
@@ -58,8 +62,9 @@ const object = {
         'age': 40,
     }
 }
+const obj2 = structuredClone(object)
 
-const a = reactive_vue2(object)
+const a = observe(object)
 a.father.name = 'ArmNotStrong'
 console.log(a)
 console.log(a.father)
@@ -67,9 +72,9 @@ console.log(a.father.name)
 
 console.log('===============================')
 
-const b = reactive_vue3(object)
-b.mother.name = 'sakura'
+const b = createReactiveObject(obj2)
 b.name = 'Yee'
+b.mother.name = 'sakura'
 console.log(b)
 console.log(b.mother)
 console.log(b.mother.name)
