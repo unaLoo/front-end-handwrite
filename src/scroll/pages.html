@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            background-color: rgb(57, 57, 57);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            width: 500px;
+            height: 700px;
+            background-color: whitesmoke;
+            overflow-y: auto;
+        }
+
+        .container :nth-child(2n + 1) {
+            background-color: rgb(214, 214, 214);
+            color: rgb(55, 55, 55);
+        }
+
+        .container :nth-child(2n) {
+            background-color: rgb(57, 57, 57);
+            color: rgb(214, 214, 214);
+        }
+
+        .card {
+            width: 370px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+        }
+
+        .btns {
+            display: flex;
+            width: 500px;
+            height: 100px;
+            background-color: rgb(212, 212, 212);
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+    </div>
+    <div class="btns">
+    </div>
+
+    <script>
+        const container = document.querySelector('.container')
+        const btns = document.querySelector('.btns')
+
+        function updateBtns(pageCount) {
+
+            const fragment = document.createDocumentFragment()
+            for (let i = 0; i < pageCount; i++) {
+                const btn = document.createElement('button')
+                btn.setAttribute('data-page', i + 1)
+                btn.innerText = `第${i + 1}页`
+                fragment.appendChild(btn)
+            }
+            btns.innerHTML = ''
+            btns.appendChild(fragment)
+        }
+
+        function updateList(list) {
+
+            const fragment = document.createDocumentFragment()
+            list.forEach(li => {
+                const d = document.createElement('div')
+                d.textContent = li.title
+                d.classList.add('card')
+                fragment.appendChild(d)
+            })
+            container.innerHTML = ''
+            container.appendChild(fragment)
+        }
+
+        function updateView(dt) {
+
+        }
+
+        function fetchData(page, limit) {
+            const url = new URL('http://localhost:3000/api/list')
+            url.searchParams.set('page', page)
+            url.searchParams.set('limit', limit)
+            return fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then(res => {
+                return res.json()
+            })
+        }
+
+
+        const itemsPerPage = 20
+        // 事件委托
+        btns.addEventListener('click', e => {
+            if (e.target.tagName === 'BUTTON') {
+                const targetPage = e.target.getAttribute('data-page')
+                fetchData(targetPage, itemsPerPage).then(res => {
+                    updateList(res.data)
+                }).catch(e => {
+                    console.warn(e)
+                })
+            }
+        })
+        // 初始加载第一页的
+        fetchData(1, itemsPerPage).then(res => {
+            const { data: list, total: pageCount } = res
+            updateBtns(pageCount)
+            updateList(list)
+        }).catch(e => {
+            console.warn(e)
+        })
+
+    </script>
+</body>
+
+</html>

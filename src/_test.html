@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input:invalid {
+            border-color: red;
+        }
+
+        input,
+        input:valid {
+            border-color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="background-color: grey; padding: 20px; text-align: center;">
+        <form action="http://localhost:3000/f" method="post" enctype="multipart/form-data">
+            <div>
+                <label for="name">备注：</label>
+                <input required type="text" id="name" name="user_name" />
+            </div>
+            <div>
+                <label for="file">点击上传文件：</label>
+                <input required type="file" name="file" id="" upload_file>
+            </div>
+            <div>
+                <!-- <input type="submit" id="submit" name="submit_button" value="提交" /> -->
+                <button>提交</button>
+                <button type="reset">充值</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+
+        function customSubmit() {
+            const form = document.querySelector('form')
+            const data = new FormData(form)
+            const uname = data.get('user_name')
+            data.set('user_name', uname.toUpperCase())
+            fetch('/handling-page', {
+                method: 'post',
+                body: data
+            })
+        }
+        window.addEventListener('keydown', e => {
+            if (e.key.toLowerCase() === 'enter') {
+                customSubmit()
+            }
+        })
+
+    </script>
+
+</body>
+
+</html>

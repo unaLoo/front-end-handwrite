@@ -1,35 +1,32 @@
-var coinChange = function (coins, amount) {
-    // 最少硬币 -- 最大面额
-    const coinarr = coins.slice().sort((a, b) => b - a); //从大到小
+var longestCommonSubsequence = function (text1, text2) {
+    // 公共子序列，是可以jump的
+    // dp[i][j] 是t1[0,i]和t2[0,j] 部分的最长公共子序列长度
 
-    // 回溯，找答案
-    let minCoinNum = Infinity;
-    let ok = false
-    let curSum = 0;
-    let curNum = 0;
-    function findAns() {
-        if (ok) return
-        if (curSum == amount) {
-            minCoinNum = curNum
-            ok = true
-            return;
-        }
-        if (curSum > amount) return
+    const dp = new Array(text1.length).fill(0).map(_ => new Array(text2.length).fill(0))
 
-        curNum++
-        // 从最大的硬币试起
-        for (let c of coinarr) {
-            curSum += c
-            findAns()
-            curSum -= c
-        }
-        curNum--
+    for (let i = 0; i < text1.length; i++) {
+        if (text1[i] === text2[0])
+            dp[i][0] = 1
     }
-    findAns()
+    for (let j = 0; j < text2.length; j++) {
+        if (text2[j] === text1[0]) {
+            dp[0][j] = 1
+        }
+    }
 
-    if (minCoinNum < Infinity) return minCoinNum
-    return -1
+    for (let i = 1; i < text1.length; i++) {
+
+        for (let j = 1; j < text2.length; j++) {
+
+            if (text1[i] != text2[j]) {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+            } else {
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            }
+        }
+    }
+
+    return dp[text1.length - 1][text2.length - 1]
 };
 
-
-console.log(coinChange([1, 2, 5], 100))
+const res = longestCommonSubsequence("abcde", "ace")

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            background-color: rgb(57, 57, 57);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            width: 500px;
+            height: 700px;
+            background-color: whitesmoke;
+            overflow-y: auto;
+            padding: 25px;
+        }
+
+        .container :nth-child(2n + 1) {
+            background-color: rgb(214, 214, 214);
+            color: rgb(55, 55, 55);
+        }
+
+        .container :nth-child(2n) {
+            background-color: rgb(57, 57, 57);
+            color: rgb(214, 214, 214);
+        }
+
+        .card {
+            width: 370px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="sentinel"></div>
+    </div>
+
+    <script>
+
+        const container = document.querySelector('.container')
+        const sentinel = document.querySelector('#sentinel')
+
+        function appendList(list) {
+            const fragment = document.createDocumentFragment()
+            list.forEach(li => {
+                const d = document.createElement('div')
+                d.textContent = li.title
+                d.classList.add('card')
+                fragment.appendChild(d)
+            })
+            container.appendChild(fragment)
+        }
+
+        function fetchData(page, limit) {
+            const url = new URL('http://localhost:3000/api/list')
+            url.searchParams.set('page', page)
+            url.searchParams.set('limit', limit)
+            return fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then(res => {
+                return res.json()
+            })
+        }
+
+        let pending = false
+        function loadNewList(page, len) {
+            if (pending) return // 防止重复请求，不然会一次加载好几页
+            console.log('load new list, page:', page)
+            pending = true
+            fetchData(page, len).then(res => {
+                console.log(res)
+                appendList(res.data)
+                pending = false
+            }).catch(e => {
+                console.warn(e)
+            })
+        }
+
+        /////// 优化 //////////////////////////////////
+        // 1. 防抖
+        // 防抖会等用户停止滚动一段时间才触发，容易错过我们设定的阈值，除非用户滚得很慢
+        function debounce(fn, delay = 200) {
+            let timer
+            return function (...args) {
+                if (timer) clearTimeout(timer)
+                timer = setTimeout(() => {
+                    fn.call(this, ...args)
+                    // timer = null
+                }, delay);
+            }
+        }
+        // 2. 节流
+        // 节流才可以实现用户体验上的无限滚动的感觉
+        function throttle(fn, delay = 200) {
+            let timer = null
+            return function (...args) {
+                if (timer !== null) return
+                timer = setTimeout(() => {
+                    fn.call(this, ...args)
+                    timer = null
+                }, delay);
+            }
+        }
+
+
+        // 初始时 load 第一页
+        let curPage = 1
+        const itemsPerPage = 50
+        loadNewList(curPage, itemsPerPage)
+
+        // container.scrollHeight 内容的高度 ==> 所有 items 的总高度，这是溢出父元素高度的
+        // container.scrollTop 当前顶端距离内容顶部的距离 
+        // container.clientHeight 容器的高度
+
+        container.addEventListener('scroll', throttle(e => {
+            console.log('trigger')
+            // const threshold = 700
+            const threshold = container.clientHeight * 0.3
+            if (container.clientHeight + container.scrollTop + threshold > container.scrollHeight) {
+                console.log('触底啦')
+                loadNewList(++curPage, itemsPerPage)
+            }
+        }))
+
+
+
+
+    </script>
+</body>
+
+</html>

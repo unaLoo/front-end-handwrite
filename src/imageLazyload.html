@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        img {
+            display: block;
+            height: 1000px;
+            width: auto; 
+        }
+    </style>
+</head>
+
+<body>
+    <div class="images">
+        <img src="https://placehold.co/300x1200.png" data-type="lazy"
+            data-src="https://images.pexels.com/photos/32498570/pexels-photo-32498570.jpeg" alt="pic">
+        <img src="https://placehold.co/300x1200.png" data-type="lazy"
+            data-src="https://images.pexels.com/photos/32750756/pexels-photo-32750756.jpeg" alt="pic">
+        <img src="https://placehold.co/300x1200.png" data-type="lazy"
+            data-src="https://images.pexels.com/photos/19381582/pexels-photo-19381582.jpeg" alt="pic">
+        <img src="https://placehold.co/300x1200.png" data-type="lazy"
+            data-src="https://images.pexels.com/photos/33220012/pexels-photo-33220012.jpeg" alt="pic">
+
+        <img src="https://placehold.co/300x1200.png" data-type="lazy"
+            data-src="https://images.pexels.com/photos/30114541/pexels-photo-30114541.jpeg" alt="" srcset="">
+    </div>
+
+    <script>
+        const imgs = document.querySelectorAll('img[data-type="lazy"]')
+        console.log(imgs[0].getAttribute('data-src'))
+
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(enc => {
+                if (enc.isIntersecting) {
+                    enc.target.setAttribute('src', enc.target.getAttribute('data-src'))
+                    observer.unobserve(enc.target);
+                }
+            })
+        })
+
+        imgs.forEach(img => observer.observe(img))
+    </script>
+</body>
+
+</html>
