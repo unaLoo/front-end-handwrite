@@ -1,0 +1,53 @@
+
+<html>
+<head>
+    <title>Grid-template-areas</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        #page {
+            display: grid;
+            width: 100vw;
+            height: 100vh;
+            grid-template-rows: 100px 1fr 50px;
+            grid-template-columns: 250px 1fr;
+            grid-template-areas:
+                "head head"
+                "nav  main"
+                "foot  foot";
+        }
+        #page>header {
+            /* 当前元素所在的区域为 head */
+            grid-area: head;
+            background-color: hsl(149, 80%, 90%)
+        }
+
+        #page>nav {
+            grid-area: nav;
+            background-color: hsl(149, 80%, 80%)
+        }
+
+        #page>main {
+            grid-area: main;
+            background-color: hsl(149, 80%, 70%)
+        }
+
+        #page>footer {
+            grid-area: foot;
+            background-color: hsl(149, 80%, 50%)
+        }
+    </style>
+
+</head>
+
+<body>
+    <section id="page">
+        <header>header</header>
+        <nav>nav</nav>
+        <main>main</main>
+        <footer>footer</footer>
+    </section>
+</body>
+</html>
